@@ -7,15 +7,16 @@ class Oauth {
 
   constructor () {
     const oauth = new BorutaOauth({
-      host: 'http://localhost:4000',
+      host: 'https://oauth.boruta.patatoid.fr',
       authorizePath: '/oauth/authorize',
       tokenPath: '/oauth/token',
       window
     })
 
     this.preauthorizedCodeClient = new oauth.PreauthorizedCode({
-      clientId: '001f7fea-bf29-4ceb-869c-7a4f7931f39b',
-      redirectUri: 'http://localhost:8080/oauth-callback'
+      clientId: '26e571cc-31d5-4f5a-bba3-9151f2714fca',
+      redirectUri: 'https://oid4vc-sample-wallet.boruta.patatoid.fr/oauth-callback',
+      clientSecret: ''
     })
   }
 
