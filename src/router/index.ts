@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import OauthCallback from '../views/OauthCallback.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/oauth-callback',
+    name: 'oauth-callback',
+    component: OauthCallback
   },
   {
     path: '/about',

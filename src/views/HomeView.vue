@@ -1,18 +1,22 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <a :href="loginUrl" class="ui fluid blue button">Get credential offer</a>
   </div>
 </template>
 
 <script lang="ts">
+import { oauth } from '../services/oauth.service'
 import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 
 export default defineComponent({
   name: 'HomeView',
-  components: {
-    HelloWorld,
+  data () {
+    return {
+      loginUrl: oauth.loginUrl
+    }
+  },
+  mounted () {
+    console.log(oauth.loginUrl)
   },
 });
 </script>
