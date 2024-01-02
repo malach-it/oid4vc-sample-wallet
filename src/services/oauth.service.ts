@@ -4,6 +4,7 @@ class Oauth {
   preauthorizedCodeClient: any
   credentialOffer: any
   tokenResponse: any
+  api: any
 
   constructor () {
     const oauth = new BorutaOauth({
@@ -12,6 +13,8 @@ class Oauth {
       tokenPath: '/oauth/token',
       window
     })
+
+    this.api = oauth.api
 
     this.preauthorizedCodeClient = new oauth.PreauthorizedCode({
       clientId: '26e571cc-31d5-4f5a-bba3-9151f2714fca',
@@ -35,6 +38,14 @@ class Oauth {
     return this.preauthorizedCodeClient.getToken().then((response: any): any => {
       this.tokenResponse = response
       return response
+    })
+  }
+
+  async getCredential() {
+    return this.api.post('/openid/credential', {
+      credential_identifier: 'CivilEngineeringDegree-2023'
+    }, {
+      headers:{ 'Authorization': `bearer ${this.tokenResponse['access_token']}` }
     })
   }
 }
