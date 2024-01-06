@@ -1,0 +1,112 @@
+- hosts: localhost
+  tasks:
+    - name: Create a k8s namespace
+      kubernetes.core.k8s:
+        api_version: v1
+        name: oid4vc-sample-wallet
+        kind: Namespace
+        state: present
+
+    - name: Create malach.it Service
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: oid4vc-sample-wallet-web
+            namespace: oid4vc-sample-wallet
+            labels:
+              app: oid4vc-sample-wallet
+          spec:
+            selector:
+              app: oid4vc-sample-wallet
+            ports:
+            - protocol: TCP
+              targetPort: 3000
+              name: admin-tcp
+              port: 3000
+
+    - name: Create SSL let's encrypt certificate
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: cert-manager.io/v1
+          kind: Issuer
+          metadata:
+            name: letsencrypt-production
+            namespace: oid4vc-sample-wallet
+          spec:
+            acme:
+              email: io.pascal.knoth@gmail.com
+              server: https://acme-v02.api.letsencrypt.org/directory
+              privateKeySecretRef:
+                name: oid4vc-sample-wallet-ssl-account-key
+              solvers:
+              - http01:
+                  ingress:
+                    class: nginx
+                selector:
+                  dnsZones:
+                  - 'oid4vc-sample-wallet.boruta.patatoid.fr'
+
+    - name: Create malach.it Ingress
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          metadata:
+            name: main-ingress
+            namespace: oid4vc-sample-wallet
+            annotations:
+              cert-manager.io/issuer: letsencrypt-production
+              kubernetes.io/ingress.class: "nginx"
+            #   nginx.ingress.kubernetes.io/rewrite-target: /
+          spec:
+            rules:
+            - host: oid4vc-sample-wallet.boruta.patatoid.fr
+              http:
+                paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: oid4vc-sample-wallet-web
+                      port:
+                        number: 3000
+            tls:
+              - hosts:
+                - oid4vc-sample-wallet.boruta.patatoid.fr
+                secretName: oid4vc-sample-wallet-cert
+
+    - name: Create malach.it deployment
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: oid4vc-sample-wallet
+            namespace: oid4vc-sample-wallet
+          spec:
+            replicas: 2
+            selector:
+              matchLabels:
+                app: oid4vc-sample-wallet
+            template:
+              metadata:
+                name: oid4vc-sample-wallet
+                labels:
+                  app: oid4vc-sample-wallet
+              spec:
+                containers:
+                  - image: "ghcr.io/malach-it/oid4vc-sample-wallet:{{ release_tag }}"
+                    readinessProbe:
+                      httpGet:
+                        path: /
+                        port: 3000
+                    imagePullPolicy: Always
+                    name: oid4vc-sample-wallet
+                imagePullSecrets:
+                - name: dockerconfigjson-github-com

@@ -9,11 +9,6 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView
   },
   {
-    path: '/oauth-callback',
-    name: 'oauth-callback',
-    component: OauthCallback
-  },
-  {
     path: '/about',
     name: 'about',
     // route level code-splitting

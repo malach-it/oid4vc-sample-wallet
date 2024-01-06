@@ -1,7 +1,7 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <nav class="ui two item menu">
+    <router-link class="item" to="/">Home</router-link>
+    <router-link class="item" to="/about">About</router-link>
   </nav>
   <router-view/>
 </template>
@@ -11,18 +11,17 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
 }
-
+a {
+  color: #f5ba00!important;
+}
 nav {
-  padding: 30px;
-
   a {
-    font-weight: bold;
-    color: #2c3e50;
+    font-weight: bold!important;
+    color: black!important;
 
     &.router-link-exact-active {
-      color: #42b983;
+      color: #f5ba00!important;
     }
   }
 }
