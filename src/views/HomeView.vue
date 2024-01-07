@@ -1,13 +1,13 @@
 <template>
+<div class="home">
 <div class="ui placeholder segment">
   <div class="ui icon header">
     <i class="pdf undo icon"></i>
-    Get your verifiable credential from your google profile
+    Get your verifiable credential from your federated profiles
   </div>
-    <a :href="loginUrl" class="ui huge violet button" style="color: white!important;">Get <br />credential offer</a>
+    <a :href="googleLoginUrl" class="ui huge violet button" style="color: white!important;">Get <br />credential offer</a>
 </div>
-<div class="home">
-  </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -18,11 +18,12 @@ export default defineComponent({
   name: 'HomeView',
   data () {
     return {
-      loginUrl: oauth.loginUrl
+      googleLoginUrl: oauth.googleLoginUrl,
+      githubLoginUrl: oauth.githubLoginUrl
     }
   },
   mounted () {
-    console.log(oauth.loginUrl)
+    console.log(oauth.googleLoginUrl)
   },
 });
 </script>
